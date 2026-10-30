@@ -52,7 +52,7 @@
 
 ## LG Soundbar Remote
 
-![LG Soundbar-remote with numbers as ID](images/Soundbar.jpg)
+![LG Soundbar-remote with numbers as ID](images/Soundboard.jpg)
 | ID | BUTTON       | PROTOCOL | ADDRESS | COMMAND | RAW DATA   | NOTES            |
 |----|--------------|----------|--------|---------|------------|------------------|
 | 1  | ON/OFF       | SAMSUNG  | 0x2C   | 0x1E    | 0xE11E2C2C |                  |
