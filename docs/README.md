@@ -70,3 +70,7 @@
 | 13 | Equalizer    | SAMSUNG  | 0x2C   | 0x98    | 0x67982C2C |                  |
 | 14 | D-PAD DOWN   | SAMSUNG  | 0x2C   | 0xA6    | 0x59A62C2C |                  |
 | 15 | Settings     | SAMSUNG  | 0x2C   | 0xA5    | 0x5AA52C2C |                  |
+
+## Schematic for IR tester
+
+![Kretsschema för IR-test](images/ir-test.svg)
