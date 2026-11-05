@@ -18,6 +18,24 @@ const config = {
     }
 }
 
+function validateProxy(proxyUrl) {
+    try {
+        const url = new URL(proxyUrl);
+        
+        const validProtocols = [
+            'http:',
+            'https:',
+            'socks4:',
+            'socks5:'
+        ];
+
+        return validProtocols.includes(url.protocol);
+
+    } catch (error) {
+        return false;
+    }
+}
+
 function sendCommand(command) {
     return new Promise((resolve, reject) => {
         const socket = net.createConnection('/tmp/mpvsocket');
@@ -56,7 +74,7 @@ function startPlayer(source, options = []) {
     ];
 
     // Proxy support
-    if (config.proxy.enabled && config.proxy.url) {
+    if (config.proxy.enabled && config.proxy.url && validateProxy(config.proxy.url)) {
         args.push(`--http-proxy=${config.proxy.url}`);
     }
 
@@ -111,7 +129,7 @@ app.get('/search', (req, res) => {
         return res.status(400).json({ error: 'Query parameter "q" is required' });
     }
 
-    if (config.proxy.enabled && config.proxy.url) {
+    if (config.proxy.enabled && config.proxy.url && validateProxy(config.proxy.url)) {
         ytDlpArgs.push('--proxy', config.proxy.url);
     }
 
