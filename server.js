@@ -6,6 +6,8 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+let player = null;
+
 function sendCommand(command) {
     return new Promise((resolve, reject) => {
         const socket = net.createConnection('/tmp/mpvsocket');
@@ -94,8 +96,6 @@ app.get('/search', (req, res) => {
         }
     })
 });
-
-let player = null;
 
 
 app.post('/play-youtube', (req, res) => {
