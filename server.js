@@ -211,14 +211,26 @@ app.get('/status', async (req, res) => {
 // ========================
 // M3U Functionality
 // ========================
-app.get('/channels', (req, res) => { })
-app.post('/play-channel', (req, res) => { })
+app.get('/channels', (req, res) => { 
+    res.json([]);
+})
+app.post('/play-channel', (req, res) => { 
+    res.json({ error: 'Not implemented' })
+})
 
-app.get('/movies', (req, res) => { })
-app.post('/play-movie', (req, res) => { })
+app.get('/movies', (req, res) => { 
+    res.json([]);
+})
+app.post('/play-movie', (req, res) => { 
+    res.json({ error: 'Not implemented' })
+})
 
-app.get('/series', (req, res) => { })
-app.post('/play-series', (req, res) => { })
+app.get('/series', (req, res) => { 
+    res.json([]);
+})
+app.post('/play-series', (req, res) => { 
+    res.json({ error: 'Not implemented' })
+})
 
 
 
