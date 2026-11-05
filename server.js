@@ -1,9 +1,34 @@
 const express = require('express');
 const { execFile, spawn } = require('child_process');
+const net = require('net');
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+
+function sendCommand(command) {
+    return new Promise((resolve, reject) => {
+        const socket = net.createConnection('/tmp/mpvsocket');
+
+        socket.on('connect', () => {
+            socket.write(JSON.stringify({ command}) + '\n');
+        });
+
+        socket.on('data', (data) => {
+            resolve(data.toString());
+            socket.end();
+        });
+        
+        socket.on('error', (err) => {
+            reject(err);
+        });
+    })
+}
+
+
+// ========================
+// YouTube Functionality
+// ========================
 
 app.get('/search', (req, res) => {
     const query = req.query.q;
@@ -42,6 +67,7 @@ let player = null;
 
 app.post('/play', (req, res) => {
     const { id } = req.body ?? {};
+
 
     if (!id) {
         return res.status(400).json({ error: 'Video ID is required' });
@@ -84,6 +110,40 @@ app.post('/play', (req, res) => {
 
     res.json({ message: `Playing video with ID: ${id}` });
 });
+
+
+app.post('/pause', (req, res) => {
+
+})
+
+
+app.post('/resume', (req, res) => {
+
+})
+
+
+app.post('/stop', (req, res) => {
+
+})
+
+
+app.get('/status', (req, res) => {})
+
+
+// ========================
+// M3U Functionality
+// ========================
+app.get('/channels', (req, res) => {})
+app.post('/play-channel', (req, res) => {})
+
+app.get('/movies', (req, res) => {})
+app.post('/play-movie', (req, res) => {})
+
+app.get('/series', (req, res) => {})
+app.post('/play-series', (req, res) => {})
+
+
+
 
 app.listen(port, '127.0.0.1', () => {
   console.log(`Server is running on port ${port}`);
