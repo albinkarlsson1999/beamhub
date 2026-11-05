@@ -25,6 +25,39 @@ function sendCommand(command) {
     })
 }
 
+function startPlayer(source, options = []) {
+    if (player) {
+        player.kill();
+    }
+
+    const current = spawn('mpv', [
+        '--input-ipc-server=/tmp/mpvsocket',
+        '--force-window=immediate',
+        '--fullscreen',
+        ...options,
+        '--',
+        source
+    ], {
+        stdio: 'inherit' 
+    });
+
+    player = current;
+
+    current.on('error', (err) => {
+        console.error(`Failed to start mpv: ${err}`);
+        if (player === current) {
+            player = null;
+        }
+    });
+
+    current.on('exit', (code, signal) => {
+        console.log(`mpv exited with code ${code} and signal ${signal}`);
+        if (player === current) {
+            player = null;
+        }
+    });
+}
+
 
 // ========================
 // YouTube Functionality
@@ -110,8 +143,6 @@ app.post('/play', (req, res) => {
 
     res.json({ message: `Playing video with ID: ${id}` });
 });
-
-
 
 // ========================
 // MPV Control Functionality
