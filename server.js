@@ -8,6 +8,16 @@ app.use(express.json());
 
 let player = null;
 
+const config = {
+    proxy: {
+        enabled: false,
+        url: null
+        // Example:
+        // url: 'http://proxy.example.com:8080'
+        // Note: If you enable the proxy, make sure to set the correct URL.
+    }
+}
+
 function sendCommand(command) {
     return new Promise((resolve, reject) => {
         const socket = net.createConnection('/tmp/mpvsocket');
@@ -39,34 +49,50 @@ function startPlayer(source, options = []) {
         player.kill();
     }
 
-    const current = spawn('mpv', [
+    const args = [
         '--input-ipc-server=/tmp/mpvsocket',
         '--force-window=immediate',
-        '--fullscreen',
-        ...options,
-        '--',
-        source
-    ], {
-        stdio: 'inherit' 
+        '--fullscreen'
+    ];
+
+    // Proxy support
+    if (config.proxy.enabled && config.proxy.url) {
+        args.push(`--http-proxy=${config.proxy.url}`);
+    }
+
+    // Specific arguments for media type
+    args.push(...options);
+
+    // Source must always be last
+    args.push('--');
+    args.push(source);
+
+    const current = spawn('mpv', args, {
+        stdio: 'inherit'
     });
 
     player = current;
 
     current.on('error', (err) => {
         console.error(`Failed to start mpv: ${err}`);
+
         if (player === current) {
             player = null;
         }
     });
 
     current.on('exit', (code, signal) => {
-        console.log(`mpv exited with code ${code} and signal ${signal}`);
+        console.log(
+            `mpv exited with code ${code} and signal ${signal}`
+        );
+
         if (player === current) {
             player = null;
         }
     });
-}
 
+    return current;
+}
 
 // ========================
 // YouTube Functionality
@@ -75,11 +101,23 @@ function startPlayer(source, options = []) {
 app.get('/search', (req, res) => {
     const query = req.query.q;
 
+    const ytDlpArgs = [
+        `ytsearch10:${query}`,
+        '--flat-playlist',
+        '-J'
+    ];
+
     if (!query) {
         return res.status(400).json({ error: 'Query parameter "q" is required' });
     }
 
-    execFile('yt-dlp', [`ytsearch10:${query}`, '--flat-playlist', '-J'], { timeout: 20000 }, (error, stdout, stderr) => {
+    if (config.proxy.enabled && config.proxy.url) {
+        ytDlpArgs.push('--proxy', config.proxy.url);
+    }
+
+
+
+    execFile('yt-dlp', ytDlpArgs, { timeout: 20000 }, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing yt-dlp: ${error}`);
             return res.status(500).json({ error: 'Internal server error' });
@@ -206,6 +244,11 @@ app.get('/status', async (req, res) => {
             paused: false
         });
     }
+});
+
+
+app.get('/settings', async (req, res) => {
+    res.json(config);
 });
 
 // ========================
