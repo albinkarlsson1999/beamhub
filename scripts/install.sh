@@ -23,6 +23,8 @@ sudo apt install -y nodejs
 echo "[5/7] Installing BeamHub..."
 sudo mkdir -p /opt/beamhub
 
+chmod +x scripts/update.sh
+
 if [ ! -d /opt/beamhub/.git ]; then
     sudo git clone https://github.com/albinkarlsson1999/beamhub.git /opt/beamhub
 else

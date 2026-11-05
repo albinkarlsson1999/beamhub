@@ -1,0 +1,10 @@
+[Unit]
+Description=BeamHub Update Service
+After=network.target
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/opt/beamhub
+
+ExecStart=/opt/beamhub/scripts/update.sh
