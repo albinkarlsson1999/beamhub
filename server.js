@@ -269,6 +269,32 @@ app.get('/settings', async (req, res) => {
     res.json(config);
 });
 
+app.get('/version', (req, res) => {
+    try {
+        const commit = execSync(
+            'git rev-parse --short HEAD',
+        )
+            .toString()
+            .trim();
+        
+        const branch = execSync(
+            'git rev-parse --abbrev-ref HEAD'
+        )
+            .toString()
+            .trim();
+        
+        res.json({
+            version: commit,
+            branch
+        });
+    } catch (error) {
+        console.error('Error getting version:', error);
+        res.status(500).json({
+            error: 'Failed to get version'
+        });
+    }
+});
+
 // ========================
 // M3U Functionality
 // ========================
