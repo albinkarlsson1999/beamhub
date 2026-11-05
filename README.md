@@ -23,7 +23,7 @@ BeamHub exists as an alternative to modern media platforms overloaded with adver
 - [ ] TV-series management
 - [ ] Watch progress tracking
 - [ ] EPG integration
-- [ ] Spotify support
+- [ ] Proxy/VPN support
 - [ ] Physical media integrations
 
 ## Architecture
