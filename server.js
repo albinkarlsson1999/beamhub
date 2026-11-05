@@ -98,50 +98,31 @@ app.get('/search', (req, res) => {
 let player = null;
 
 
-app.post('/play', (req, res) => {
+app.post('/play-youtube', (req, res) => {
     const { id } = req.body ?? {};
 
-
     if (!id) {
-        return res.status(400).json({ error: 'Video ID is required' });
+        return res.status(400).json({
+            error: 'Video ID is required'
+        });
     }
 
     if (!/^[a-zA-Z0-9_-]{11}$/.test(id)) {
-        return res.status(400).json({ error: 'Invalid video ID' });
+        return res.status(400).json({
+            error: 'Invalid video ID'
+        });
     }
 
-    const url = `https://www.youtube.com/watch?v=${id}`;
+    startPlayer(
+        `https://www.youtube.com/watch?v=${id}`,
+        [
+            '--ytdl-format=bestvideo[height<=?1080][vcodec^=avc1]+bestaudio[ext=m4a]'
+        ]
+    );
 
-    if (player) {
-        player.kill();
-    }
-
-    const current = spawn('mpv', [
-        '--input-ipc-server=/tmp/mpvsocket',
-        '--ytdl-format=bestvideo[height<=?1080][vcodec^=avc1]+bestaudio[ext=m4a]',
-        '--force-window=immediate',
-        '--fullscreen',
-        '--',
-        url
-    ], { stdio: 'inherit' });
-
-    player = current;
-
-    current.on('error', (err) => {
-        console.error(`Failed to start mpv: ${err}`);
-        if (player === current) {
-            player = null;
-        }
+    res.json({
+        success: true
     });
-
-    current.on('exit', (code, signal) => {
-        console.log(`mpv exited with code ${code} and signal ${signal}`);
-        if (player === current) {
-            player = null;
-        }
-    });
-
-    res.json({ message: `Playing video with ID: ${id}` });
 });
 
 // ========================
