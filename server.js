@@ -11,14 +11,14 @@ function sendCommand(command) {
         const socket = net.createConnection('/tmp/mpvsocket');
 
         socket.on('connect', () => {
-            socket.write(JSON.stringify({ command}) + '\n');
+            socket.write(JSON.stringify({ command }) + '\n');
         });
 
         socket.on('data', (data) => {
             resolve(data.toString());
             socket.end();
         });
-        
+
         socket.on('error', (err) => {
             reject(err);
         });
@@ -90,7 +90,7 @@ app.post('/play', (req, res) => {
         '--fullscreen',
         '--',
         url
-    ], {stdio: 'inherit'});
+    ], { stdio: 'inherit' });
 
     player = current;
 
@@ -112,39 +112,98 @@ app.post('/play', (req, res) => {
 });
 
 
-app.post('/pause', (req, res) => {
 
+// ========================
+// MPV Control Functionality
+// ========================
+
+app.post('/toggle-pause', async (req, res) => {
+    try {
+        await sendCommand([
+            'cycle',
+            'pause'
+        ]);
+        res.json({
+            success: true,
+            message: 'Playback toggled'
+        });
+    } catch (error) {
+        console.error('Error toggling playback:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to toggle playback'
+        });
+    }
 })
 
 
-app.post('/resume', (req, res) => {
+app.post('/stop', async (req, res) => {
+    try {
+        await sendCommand([
+            'quit'
+        ]);
 
+        player = null;
+
+        res.json({
+            success: true,
+            message: 'Playback stopped'
+        });
+    } catch (error) {
+        console.error('Error stopping playback:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to stop playback'
+        });
+    }
 })
 
 
-app.post('/stop', (req, res) => {
+app.get('/status', async (req, res) => {
+    if (!player) {
+        return res.json({
+            playing: false,
+            paused: false
+        });
+    }
 
-})
+    try {
+        const result = await sendCommand([
+            'get_property',
+            'pause'
+        ]);
 
+        const response = JSON.parse(result);
 
-app.get('/status', (req, res) => {})
+        res.json({
+            playing: true,
+            paused: response.data
+        });
+    } catch (error) {
+        console.error('Error getting status:', error);
 
+        res.json({
+            playing: false,
+            paused: false
+        });
+    }
+});
 
 // ========================
 // M3U Functionality
 // ========================
-app.get('/channels', (req, res) => {})
-app.post('/play-channel', (req, res) => {})
+app.get('/channels', (req, res) => { })
+app.post('/play-channel', (req, res) => { })
 
-app.get('/movies', (req, res) => {})
-app.post('/play-movie', (req, res) => {})
+app.get('/movies', (req, res) => { })
+app.post('/play-movie', (req, res) => { })
 
-app.get('/series', (req, res) => {})
-app.post('/play-series', (req, res) => {})
+app.get('/series', (req, res) => { })
+app.post('/play-series', (req, res) => { })
 
 
 
 
 app.listen(port, '127.0.0.1', () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
