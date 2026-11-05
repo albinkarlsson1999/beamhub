@@ -12,6 +12,13 @@ function sendCommand(command) {
     return new Promise((resolve, reject) => {
         const socket = net.createConnection('/tmp/mpvsocket');
 
+        socket.setTimeout(2000);
+
+        socket.on('timeout', () => {
+            socket.destroy();
+            reject(new Error('Socket connection timed out'));
+        });
+
         socket.on('connect', () => {
             socket.write(JSON.stringify({ command }) + '\n');
         });
