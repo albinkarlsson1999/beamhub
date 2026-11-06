@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { searchSvt } from '../api/svt';
-import { playYoutube } from '../api/player';
+import { playSvt } from '../api/player';
 
 const styles = {
     row: {
@@ -126,6 +126,7 @@ export default function SVT() {
 
                     <button
                         style={styles.playButton}
+                        onClick={() => playSvt(video.url)}
                     >
                         ▶
                     </button>

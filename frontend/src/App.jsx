@@ -1,7 +1,8 @@
 import YouTube from './pages/YouTube';
+import SVT from './pages/SVT';
  
 function App() {
-return <YouTube />;
+return <SVT />;
 }
  
 export default App;
