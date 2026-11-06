@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { searchYouTube } from '../api/youtube';
+import { playYoutube } from '../api/player';
 
 export default function YouTube() {
     const [query, setQuery] = useState('');
@@ -59,6 +60,7 @@ export default function YouTube() {
                             <h3>{video.title}</h3>
                             <p>Duration {video.duration}s</p>
                             <p>{video.view_count} views</p>
+                            <button onClick={() => playYoutube(video.id)}>Play</button>
                         </div>
 
                     </div>
