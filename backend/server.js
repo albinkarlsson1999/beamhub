@@ -292,6 +292,22 @@ app.get('/search-svt', async (req, res) => {
     }
 });
 
+app.post('/play-svt', (req, res) => {
+    const {url} = req.body ?? {};
+
+    if (!url) {
+        return res.status(400).json({
+            error: 'SVT URL is required'
+        });
+    }
+    
+    startPlayer(url);
+    
+    res.json({
+        success: true
+    });
+});
+
 // ========================
 // MPV Control Functionality
 // ========================
