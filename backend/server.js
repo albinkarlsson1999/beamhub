@@ -1,10 +1,12 @@
 const express = require('express');
 const { execFile, spawn } = require('child_process');
 const net = require('net');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors());
 
 let player = null;
 
@@ -322,6 +324,6 @@ app.post('/play-series', (req, res) => {
 
 
 
-app.listen(port, '127.0.0.1', () => {
+app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

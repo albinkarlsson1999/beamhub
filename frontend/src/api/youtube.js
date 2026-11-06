@@ -1,8 +1,8 @@
-const API_URL = 'localhost:3000'
+const API_URL = 'http://localhost:3000'
 
 export async function searchYouTube(query) {
     const response = await fetch(
-        `${API_URL}/search?query=${encodeURIComponent(query)}`
+        `${API_URL}/search?q=${encodeURIComponent(query)}`
     );
 
     if (!response.ok) {

@@ -2,12 +2,14 @@
   "name": "beamhub",
   "version": "1.0.0",
   "description": "Self-hosted living room interface for a Raspberry Pi 5 projector setup: a TV-friendly start page, mpv/yt-dlp playback and a custom air-mouse remote.",
-  "main": "index.js",
+  "main": "server.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,8 @@
   },
   "homepage": "https://github.com/albinkarlsson1999/beamhub#readme",
   "dependencies": {
-    "express": "^5.3.0"
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "nodemon": "^3.1.14"
   }
 }
