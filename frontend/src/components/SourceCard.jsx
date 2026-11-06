@@ -21,6 +21,10 @@ function SourceCard({ title, description, icon: Icon, accent, to, disabled = fal
     )
   }
 
+  if (title === 'Settings') {
+    style.width = '50%'
+  }
+
   return (
     <Link to={to} className="source-card" style={style}>
       {content}

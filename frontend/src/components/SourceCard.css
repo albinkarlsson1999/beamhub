@@ -1,4 +1,7 @@
 .source-card {
+  height: 86vh;
+  justify-content: center;
+  align-items: center;
   --accent: #4cc9f0;
   display: flex;
   flex-direction: column;

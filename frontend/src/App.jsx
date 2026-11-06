@@ -11,6 +11,7 @@ function App() {
             <Route path="/youtube" element={<YouTube />} />
             <Route path="/svt" element={<SVT />} />
             <Route path="/svt/series/:path" element={<SVTSeries />} />
+            <Route path="/settings" element={<Home />} />
         </Routes>
     );
 }

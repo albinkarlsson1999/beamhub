@@ -1,4 +1,4 @@
-import { Play, Tv, Clapperboard, Library } from 'lucide-react'
+import { Play, Tv, Clapperboard, Library, Settings } from 'lucide-react'
 import SourceCard from '../components/SourceCard'
 
 const sources = [
@@ -6,7 +6,8 @@ const sources = [
   { title: 'SVT Play', description: 'Search and play SVT content.', icon: Tv, accent: '#3ddc97', to: '/svt' },
   { title: 'Movies', description: 'Local movie library.', icon: Clapperboard, accent: '#ffb84d', disabled: true },
   { title: 'Series', description: 'Local series library.', icon: Library, accent: '#b48cff', disabled: true },
-  { title: 'IPTV', description: 'Watch IPTV streams.', icon: Tv, accent: '#4d79ff', disabled: true }
+  { title: 'IPTV', description: 'Watch IPTV streams.', icon: Tv, accent: '#4d79ff', disabled: true },
+  { title: 'Settings', description: '', icon: Settings, accent: 'gray', to: '/settings' }
 ]
 
 function Home() {
