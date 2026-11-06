@@ -76,7 +76,16 @@ export default function SVT() {
             <ul className="svt-results">
                 {results.map((video) => (
                     <li key={video.id}>
-                        <button className="svt-result" onClick={() => playSvt(video.url)}>
+                        <button
+                            className="svt-result"
+                            onClick={() => {
+                                if (video.type === 'TvSeries') {
+                                    navigate(`/svt/series/${video.id}`);
+                                } else {
+                                    playSvt(video.url);
+                                }
+                            }}
+                        >
                             <img
                                 className="svt-result__thumbnail"
                                 src={video.thumbnail}

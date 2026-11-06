@@ -199,6 +199,36 @@ app.post('/play-youtube', (req, res) => {
 // SVT Play Functionality
 // ========================
 
+app.get('/svt/series', (req, res) => {
+    const path = req.query.path;
+
+    if (!path) {
+        return res.status(400).json({
+            error: 'Query parameter "path" is required'
+        });
+    }
+
+    const variables = encodeURIComponent(
+        JSON.stringify({
+            abTestVariants: [],
+            history: [],
+            kidsFilter: false,
+            onlyKidsContent: false,
+            path
+        })
+    );
+
+    const extensions = encodeURIComponent(
+        JSON.stringify({
+            persistedQuery: {
+                sha256Hash:
+                    'a375716d2597a79cf0f18785ea4d7ed14c17ae3e16a916d1e0bd4fe936cf1886',
+                version: 1
+            }
+        })
+    );
+})
+
 app.get('/search-svt', async (req, res) => {
     const query = req.query.q;
 
