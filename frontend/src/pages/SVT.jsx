@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Play, Search } from 'lucide-react';
 import { searchSvt } from '../api/svt';
 import { playSvt } from '../api/player';
@@ -10,6 +12,21 @@ export default function SVT() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searched, setSearched] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        function handleKeydown(e) {
+            if (e.key === 'Escape') {
+                navigate('/');
+            }
+        }
+
+        window.addEventListener('keydown', handleKeydown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeydown);
+        };
+    }, [navigate]);
 
     async function handleSearch(e) {
         e.preventDefault();
@@ -21,6 +38,7 @@ export default function SVT() {
         setError(null);
         try {
             const videos = await searchSvt(query);
+            console.log(videos);
             setResults(videos);
             setSearched(true);
         } catch (err) {
@@ -65,8 +83,8 @@ export default function SVT() {
                                 alt={video.title}
                             />
                             <span className="svt-result__info">
-                                <span className="svt-result__title">{video.title}</span>
-                                {video.subtitle && (
+                                <span className="svt-result__title">{video.title || video.subtitle}</span>
+                                {video.title && video.subtitle && (
                                     <span className="svt-result__subtitle">{video.subtitle}</span>
                                 )}
                                 <span className="svt-result__meta">

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Play, Search } from 'lucide-react';
 
 import { searchYouTube } from '../api/youtube';
@@ -15,8 +16,8 @@ function formatDuration(duration) {
         return `${hours}:${minutes
             .toString()
             .padStart(2, '0')}:${seconds
-            .toString()
-            .padStart(2, '0')}`;
+                .toString()
+                .padStart(2, '0')}`;
     }
 
     return `${minutes}:${seconds
@@ -46,6 +47,22 @@ export default function YouTube() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searched, setSearched] = useState(false);
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        function handleKeydown(e) {
+            if (e.key === 'Escape') {
+                navigate('/');
+            }
+        }
+
+        window.addEventListener('keydown', handleKeydown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeydown);
+        };
+    }, [navigate]);
 
     async function handleSearch(e) {
         e.preventDefault();

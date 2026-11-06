@@ -102,7 +102,7 @@
 
 .youtube-result {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 
     gap: 1.5rem;
@@ -154,6 +154,10 @@
 }
 .youtube-result__meta {
     font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
 
 .youtube-badge {

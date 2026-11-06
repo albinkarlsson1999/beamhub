@@ -115,6 +115,10 @@ function startPlayer(source, options = []) {
     return current;
 }
 
+function stripHtml(text) {
+    return text?.replace(/<[^>]*>/g, '') ?? '';
+}
+
 // ========================
 // YouTube Functionality
 // ========================
@@ -260,11 +264,9 @@ app.get('/search-svt', async (req, res) => {
                 return {
                     id: teaser.item.svtId,
 
-                    title: teaser.heading
-                        ?.replaceAll('<em>', '')
-                        ?.replaceAll('</em>', ''),
+                    title: stripHtml(teaser.item.title),
 
-                    subtitle: teaser.subHeading,
+                    subtitle: stripHtml(teaser.subHeading),
 
                     type: teaser.item.__typename,
 

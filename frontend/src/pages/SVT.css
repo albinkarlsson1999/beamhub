@@ -127,6 +127,10 @@
 
 .svt-result__meta {
   font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .svt-badge {
