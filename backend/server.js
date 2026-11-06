@@ -123,7 +123,7 @@ app.get('/search', (req, res) => {
     const query = req.query.q;
 
     const ytDlpArgs = [
-        `ytsearch10:${query}`,
+        `ytsearch25:${query}`,
         '--flat-playlist',
         '-J'
     ];
