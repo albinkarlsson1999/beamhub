@@ -59,6 +59,11 @@ export default function SVT() {
                 {results.map((video) => (
                     <li key={video.id}>
                         <button className="svt-result" onClick={() => playSvt(video.url)}>
+                            <img
+                                className="svt-result__thumbnail"
+                                src={video.thumbnail}
+                                alt={video.title}
+                            />
                             <span className="svt-result__info">
                                 <span className="svt-result__title">{video.title}</span>
                                 {video.subtitle && (

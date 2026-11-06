@@ -274,7 +274,11 @@ app.get('/search-svt', async (req, res) => {
 
                     videoId: teaser.item.videoSvtId,
 
-                    imageId: teaser.images?.wide?.id,
+                    thumbnail:
+                        `https://www.svtstatic.se/image/custom/430/` +
+                        `${teaser.images?.wide?.id}/` +
+                        `${teaser.images?.wide?.changed}` +
+                        '?format=auto&chromaSubSampling=false&enableAvif=true&quality=50',
 
                     swedenOnly:
                         teaser.item.restrictions
@@ -293,16 +297,16 @@ app.get('/search-svt', async (req, res) => {
 });
 
 app.post('/play-svt', (req, res) => {
-    const {url} = req.body ?? {};
+    const { url } = req.body ?? {};
 
     if (!url) {
         return res.status(400).json({
             error: 'SVT URL is required'
         });
     }
-    
+
     startPlayer(url);
-    
+
     res.json({
         success: true
     });

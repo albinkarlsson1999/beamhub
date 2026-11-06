@@ -112,6 +112,12 @@
 .svt-result__title {
   font-size: 1.75rem;
   font-weight: 600;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
 }
 
 .svt-result__subtitle {
@@ -120,9 +126,7 @@
 }
 
 .svt-result__meta {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
+  font-size: 0.9rem;
 }
 
 .svt-badge {
@@ -142,4 +146,14 @@
   width: 2.5rem;
   height: 2.5rem;
   color: var(--accent);
+}
+
+.svt-result__thumbnail {
+  width: 220px;
+  aspect-ratio: 16 / 9;
+
+  object-fit: cover;
+  border-radius: 12px;
+
+  flex-shrink: 0;
 }
