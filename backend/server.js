@@ -2,6 +2,7 @@ const express = require('express');
 const { execFile, spawn } = require('child_process');
 const net = require('net');
 const cors = require('cors');
+const https = require('https');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -23,7 +24,7 @@ const config = {
 function validateProxy(proxyUrl) {
     try {
         const url = new URL(proxyUrl);
-        
+
         const validProtocols = [
             'http:',
             'https:',
@@ -189,6 +190,108 @@ app.post('/play-youtube', (req, res) => {
     });
 });
 
+
+// ========================
+// SVT Play Functionality
+// ========================
+
+app.get('/search-svt', async (req, res) => {
+    const query = req.query.q;
+
+    if (!query) {
+        return res.status(400).json({
+            error: 'Query parameter "q" is required'
+        });
+    }
+
+    const variables = encodeURIComponent(
+        JSON.stringify({
+            abTestVariants: [],
+            kidsFilter: false,
+            onlyKidsContent: false,
+            query,
+            searchClickHistory: []
+        })
+    );
+
+    const extensions = encodeURIComponent(
+        JSON.stringify({
+            persistedQuery: {
+                sha256Hash:
+                    '665488250690ac83cac858021011cee4d5b22cff046e74d7ab65b72384dfe09e',
+                version: 1
+            }
+        })
+    );
+
+    const url =
+        `https://contento-search.svt.se/graphql` +
+        `?operationName=SearchPage` +
+        `&variables=${variables}` +
+        `&extensions=${extensions}` +
+        `&ua=svtplaywebb-render-prod-client`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0',
+                'Accept': 'application/json',
+                'Origin': 'https://www.svtplay.se',
+                'Referer': 'https://www.svtplay.se/'
+            }
+        });
+
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: `SVT returned status ${response.status}`
+            });
+        }
+
+        const data = await response.json();
+
+        const hits =
+            data?.data?.searchPage?.flat?.hits ?? [];
+
+        const results = hits
+            .filter(hit => hit.teaser)
+            .map(hit => {
+                const teaser = hit.teaser;
+
+                return {
+                    id: teaser.item.svtId,
+
+                    title: teaser.heading
+                        ?.replaceAll('<em>', '')
+                        ?.replaceAll('</em>', ''),
+
+                    subtitle: teaser.subHeading,
+
+                    type: teaser.item.__typename,
+
+                    url:
+                        `https://www.svtplay.se` +
+                        teaser.item.urls.svtplay,
+
+                    videoId: teaser.item.videoSvtId,
+
+                    imageId: teaser.images?.wide?.id,
+
+                    swedenOnly:
+                        teaser.item.restrictions
+                            .onlyAvailableInSweden
+                };
+            });
+
+        res.json(results);
+    } catch (error) {
+        console.error('SVT Search Error:', error);
+
+        res.status(500).json({
+            error: 'Failed to search SVT'
+        });
+    }
+});
+
 // ========================
 // MPV Control Functionality
 // ========================
@@ -277,13 +380,13 @@ app.get('/version', (req, res) => {
         )
             .toString()
             .trim();
-        
+
         const branch = execSync(
             'git rev-parse --abbrev-ref HEAD'
         )
             .toString()
             .trim();
-        
+
         res.json({
             version: commit,
             branch
@@ -299,24 +402,24 @@ app.get('/version', (req, res) => {
 // ========================
 // M3U Functionality
 // ========================
-app.get('/channels', (req, res) => { 
+app.get('/channels', (req, res) => {
     res.json([]);
 })
-app.post('/play-channel', (req, res) => { 
+app.post('/play-channel', (req, res) => {
     res.json({ error: 'Not implemented' })
 })
 
-app.get('/movies', (req, res) => { 
+app.get('/movies', (req, res) => {
     res.json([]);
 })
-app.post('/play-movie', (req, res) => { 
+app.post('/play-movie', (req, res) => {
     res.json({ error: 'Not implemented' })
 })
 
-app.get('/series', (req, res) => { 
+app.get('/series', (req, res) => {
     res.json([]);
 })
-app.post('/play-series', (req, res) => { 
+app.post('/play-series', (req, res) => {
     res.json({ error: 'Not implemented' })
 })
 
