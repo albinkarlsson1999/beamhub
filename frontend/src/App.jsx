@@ -10,7 +10,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/youtube" element={<YouTube />} />
             <Route path="/svt" element={<SVT />} />
-            <Route path="/svt/series/:id" element={<SVTSeries />} />
+            <Route path="/svt/series/:path" element={<SVTSeries />} />
         </Routes>
     );
 }

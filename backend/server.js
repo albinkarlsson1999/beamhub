@@ -199,7 +199,7 @@ app.post('/play-youtube', (req, res) => {
 // SVT Play Functionality
 // ========================
 
-app.get('/svt/series', (req, res) => {
+app.get('/svt/series', async (req, res) => {
     const path = req.query.path;
 
     if (!path) {
@@ -227,7 +227,76 @@ app.get('/svt/series', (req, res) => {
             }
         })
     );
-})
+
+    const url =
+        `https://contento.svt.se/graphql` +
+        `?operationName=DetailsPageQuery` +
+        `&variables=${variables}` +
+        `&extensions=${extensions}` +
+        `&ua=svtplaywebb-render-prod-client`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0',
+                'Accept': 'application/json',
+                'Origin': 'https://www.svtplay.se',
+                'Referer': 'https://www.svtplay.se/'
+            }
+        });
+
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: `SVT returned status ${response.status}`
+            });
+        }
+
+        const data = await response.json();
+
+        const modules =
+            data?.data?.detailsPageByPath?.modules ?? [];
+
+        const seasons = modules
+            .filter(module => module.defaultSelection?.itemsAdult)
+            .map(module => ({
+                name: module.defaultSelection.name,
+
+                episodes:
+                    module.defaultSelection.itemsAdult.map(
+                        episode => ({
+                            title: episode.heading,
+                            subtitle: episode.subHeading,
+
+                            url:
+                                'https://www.svtplay.se' +
+                                episode.item.urls.svtplay,
+
+                            videoId:
+                                episode.item.videoSvtId,
+
+                            thumbnail:
+                                `https://www.svtstatic.se/image/custom/430/` +
+                                `${episode.images?.wide?.id}/` +
+                                `${episode.images?.wide?.changed}` +
+                                '?format=auto&chromaSubSampling=false&enableAvif=true&quality=50'
+                        })
+                    )
+            }));
+
+        res.json({
+            title:
+                data?.data?.detailsPageByPath?.item?.name,
+
+            seasons
+        });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: 'Failed to fetch series'
+        });
+    }
+});
 
 app.get('/search-svt', async (req, res) => {
     const query = req.query.q;
