@@ -1,5 +1,6 @@
 # BeamHub
 
+![BeamHub Logo](frontend/public/favicon.png)
 A self-hosted media platform for projector-based home entertainment systems.
 
 > Developing open source software without a cookie banner.
