@@ -7,7 +7,7 @@ const sources = [
   { title: 'Movies', description: 'Local movie library.', icon: Clapperboard, accent: '#ffb84d', disabled: true },
   { title: 'Series', description: 'Local series library.', icon: Library, accent: '#b48cff', disabled: true },
   { title: 'IPTV', description: 'Watch IPTV streams.', icon: Tv, accent: '#4d79ff', disabled: true },
-  { title: 'Settings', description: '', icon: Settings, accent: 'gray', to: '/settings' }
+  { title: 'Settings', description: 'Configure BeamHub.', icon: Settings, accent: 'gray', to: '/settings' },
 ]
 
 function Home() {
