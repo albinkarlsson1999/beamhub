@@ -2,36 +2,6 @@ import { useState } from 'react';
 import { searchYouTube } from '../api/youtube';
 import { playYoutube } from '../api/player';
 
-const styles = {
-    row: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-        marginBottom: '1rem',
-        textAlign: 'left',
-    },
-    thumbnail: {
-        width: 160,
-        flexShrink: 0,
-    },
-    info: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.25rem',
-    },
-    text: {
-        margin: 0,
-    },
-    playButton: {
-        fontSize: '1.7rem',
-        padding: '0.5rem 1rem',
-        marginRight: '2rem',
-        cursor: 'pointer',
-        color: 'lime'
-    },
-};
-
 function formatDuration(duration) {
     const hours = Math.floor(duration / 3600);
     const minutes = Math.floor((duration % 3600) / 60);
@@ -90,39 +60,22 @@ export default function YouTube() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
             />
-
             <button onClick={handleSearch} disabled={loading}>
-                Search
+                {loading ? 'Searching...' : 'Search'}
             </button>
 
-            {loading && <p>Loading...</p>}
-
-            {results.map((video) => (
-                <div key={video.id} style={styles.row}>
-                    <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        style={styles.thumbnail}
-                    />
-
-                    <div style={styles.info}>
-                        <h3 style={styles.text}>{video.title}</h3>
-                        <p style={styles.text}>
-                            Duration {formatDuration(video.duration)}
-                        </p>
-                        <p style={styles.text}>
-                            {formatViewCount(video.view_count)} views
-                        </p>
-                    </div>
-
-                    <button
-                        onClick={() => playYoutube(video.id)}
-                        style={styles.playButton}
-                    >
-                        <span className="glyphicon glyphicon-play">▶</span>
-                    </button>
-                </div>
-            ))}
+            <ul>
+                {results.map((video) => (
+                    <li key={video.id} style={{ marginBottom: '1rem' }}>
+                        <div>
+                            <strong>{video.title}</strong>
+                        </div>
+                        <div>Duration: {formatDuration(video.duration)}</div>
+                        <div>Views: {formatViewCount(video.viewCount)}</div>
+                        <button onClick={() => playYoutube(video.url)}>▶ Play</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
