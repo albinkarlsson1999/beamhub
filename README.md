@@ -15,6 +15,13 @@ BeamHub exists as an alternative to modern media platforms overloaded with adver
 - Custom ESP32 air-mouse support
 - Self-hosted architecture
 
+## Features to be implemented
+- [x] SVT
+- [x] YouTube (yt-dlp)
+- [ ] Jellyfin
+- [ ] Live TV / IPTV
+- [ ] Custom remote
+
 ## Roadmap
 
 - [ ] IPTV / M3U support
