@@ -144,7 +144,6 @@ app.get('/search', (req, res) => {
         }
         try {
             const data = JSON.parse(stdout);
-            console.log(data);
             const result = data.entries.map(entry => ({
                 id: entry.id,
                 title: entry.title,

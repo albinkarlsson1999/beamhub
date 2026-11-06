@@ -2,6 +2,50 @@ import { useState } from 'react';
 import { searchYouTube } from '../api/youtube';
 import { playYoutube } from '../api/player';
 
+const styles = {
+    row: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        marginBottom: '1rem',
+        textAlign: 'left',
+    },
+    thumbnail: {
+        width: 160,
+        flexShrink: 0,
+    },
+    info: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.25rem',
+    },
+    text: {
+        margin: 0,
+    },
+    playButton: {
+        fontSize: '1rem',
+        padding: '0.5rem 1rem',
+        cursor: 'pointer',
+    },
+};
+
+function formatDuration(duration) {
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function formatViewCount(viewCount) {
+    if (viewCount >= 1_000_000) {
+        return `${(viewCount / 1_000_000).toFixed(1)}M`;
+    }
+    if (viewCount >= 1_000) {
+        return `${(viewCount / 1_000).toFixed(1)}K`;
+    }
+    return viewCount.toString();
+}
+
 export default function YouTube() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
@@ -13,13 +57,19 @@ export default function YouTube() {
         }
 
         setLoading(true);
-        try{
+        try {
             const videos = await searchYouTube(query);
             setResults(videos);
         } catch (error) {
             console.error('Error searching YouTube:', error);
         } finally {
             setLoading(false);
+        }
+    }
+
+    function handleKeyDown(e) {
+        if (e.key === 'Enter') {
+            handleSearch();
         }
     }
 
@@ -32,41 +82,41 @@ export default function YouTube() {
                 placeholder="Search YouTube..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
             />
 
             <button onClick={handleSearch} disabled={loading}>
                 Search
             </button>
 
-
             {loading && <p>Loading...</p>}
 
-            {
-                results.map((video) => (
-                    <div key={video.id}
-                    style={
-                        {
-                            display: 'flex',
-                            gap: '1rem',
-                            marginBottom: '1rem',
-                        }
-                    }
-                    >
-                        <img src={video.thumbnail} 
-                        alt={video.title} 
-                        width={160} />
+            {results.map((video) => (
+                <div key={video.id} style={styles.row}>
+                    <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        style={styles.thumbnail}
+                    />
 
-                        <div>
-                            <h3>{video.title}</h3>
-                            <p>Duration {video.duration}s</p>
-                            <p>{video.view_count} views</p>
-                            <button onClick={() => playYoutube(video.id)}>Play</button>
-                        </div>
-
+                    <div style={styles.info}>
+                        <h3 style={styles.text}>{video.title}</h3>
+                        <p style={styles.text}>
+                            Duration {formatDuration(video.duration)}
+                        </p>
+                        <p style={styles.text}>
+                            {formatViewCount(video.view_count)} views
+                        </p>
                     </div>
-                ))
-            }
-        </div>
-    )
-}
 
+                    <button
+                        onClick={() => playYoutube(video.id)}
+                        style={styles.playButton}
+                    >
+                        Play
+                    </button>
+                </div>
+            ))}
+        </div>
+    );
+}
