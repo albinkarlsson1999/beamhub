@@ -1,69 +1,21 @@
-export default function Home() {
-    return (
-        <div>
-            <h1>BeamHub</h1>
+import { Play, Tv, Clapperboard, Library } from 'lucide-react'
+import SourceCard from '../components/SourceCard'
 
-            <p>
-                Developing open source software without a cookie banner.
-            </p>
+const sources = [
+  { title: 'YouTube', description: 'Search and play YouTube videos.', icon: Play, accent: '#ff4d4d', to: '/youtube' },
+  { title: 'SVT Play', description: 'Search and play SVT content.', icon: Tv, accent: '#3ddc97', to: '/svt' },
+  { title: 'Movies', description: 'Local movie library.', icon: Clapperboard, accent: '#ffb84d', disabled: true },
+  { title: 'Series', description: 'Local series library.', icon: Library, accent: '#b48cff', disabled: true },
+]
 
-            <h2>Media Sources</h2>
-
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '1rem',
-                    flexWrap: 'wrap'
-                }}
-            >
-                <div
-                    style={{
-                        padding: '1rem',
-                        border: '1px solid #444',
-                        borderRadius: '8px',
-                        minWidth: '200px'
-                    }}
-                >
-                    <h3>YouTube</h3>
-                    <p>Search and play videos.</p>
-                </div>
-
-                <div
-                    style={{
-                        padding: '1rem',
-                        border: '1px solid #444',
-                        borderRadius: '8px',
-                        minWidth: '200px'
-                    }}
-                >
-                    <h3>SVT Play</h3>
-                    <p>Watch SVT content.</p>
-                </div>
-
-                <div
-                    style={{
-                        padding: '1rem',
-                        border: '1px solid #444',
-                        borderRadius: '8px',
-                        minWidth: '200px'
-                    }}
-                >
-                    <h3>Movies</h3>
-                    <p>Coming soon.</p>
-                </div>
-
-                <div
-                    style={{
-                        padding: '1rem',
-                        border: '1px solid #444',
-                        borderRadius: '8px',
-                        minWidth: '200px'
-                    }}
-                >
-                    <h3>Series</h3>
-                    <p>Coming soon.</p>
-                </div>
-            </div>
-        </div>
-    );
+function Home() {
+  return (
+    <div className="sources-grid">
+      {sources.map((s) => (
+        <SourceCard key={s.title} {...s} />
+      ))}
+    </div>
+  )
 }
+
+export default Home
