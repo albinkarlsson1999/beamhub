@@ -24,15 +24,21 @@ const styles = {
         margin: 0,
     },
     playButton: {
-        fontSize: '1rem',
+        fontSize: '1.7rem',
         padding: '0.5rem 1rem',
+        marginRight: '2rem',
         cursor: 'pointer',
+        color: 'lime'
     },
 };
 
 function formatDuration(duration) {
-    const minutes = Math.floor(duration / 60);
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
     const seconds = duration % 60;
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
@@ -113,7 +119,7 @@ export default function YouTube() {
                         onClick={() => playYoutube(video.id)}
                         style={styles.playButton}
                     >
-                        Play
+                        <span className="glyphicon glyphicon-play">▶</span>
                     </button>
                 </div>
             ))}
